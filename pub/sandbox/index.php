@@ -12,7 +12,7 @@
             Wybierz plik do wgrania na serwer:
         </label>
         <input type="file" name="uploadedFile" id="uploadedFileInput">
-        <input type="submit" value="Wyślij plik" name="submit"><br>
+        <input type="submit" value="Wyślij plik" name="submit" required><br>
     </form>
 
     <?php
@@ -24,6 +24,23 @@
 
          //pobierz pierwotną nazwę pliku z tablicy $_FILES
          $sourceFileName = $_FILES['uploadedFile']['name'];
+
+
+         //wyciągnij pierwotne rozszerzenie pliku
+        $sourceFileExtension = pathinfo($sourceFileName, PATHINFO_EXTENSION);
+        
+        
+        //zmień litery rozszerzenia na małe
+        $sourceFileExtension = strtolower($sourceFileExtension);
+
+        
+        //wygeneruj hash - nową nazwę pliku
+        $newFileName = hash("sha256", $sourceFileName) . hrtime(true)
+                            . "." . $sourceFileExtension;
+        
+                            
+        //wygeneruj pełny docelowy URL
+        $targetURL = $targetDir . $newFileName;
  
 
          //pobierz tymczasową ścieżkę do pliku na serwerze
@@ -38,7 +55,8 @@
  
 
          //zbuduj docelowy URL pliku na serwerze
-         $targetURL = $targetDir . $sourceFileName;
+         //$targetURL = $targetDir . $sourceFileName;
+         //wycofane na rzecz hasha
  
 
          //sprawdź czy plik przypadkiem już nie istnieje
