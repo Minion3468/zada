@@ -40,8 +40,8 @@
         }
 
 
-        $newFileName = hash("sha256", $sourceFileName . hrtime(true))
-                            . ".webp";
+        $newFileName = hash("sha256", $sourceFileName . hrtime(true));
+        $newFileName = $hash        . ".webp";
 
 
 
@@ -62,6 +62,13 @@
 
         
         imagewebp($gdImage, $targetURL);
+
+        $db = new mysqli('localhost', 'root', '', 'cms');
+        $query = $db->prepare("INSERT INTO post VALUES(NULL, ?, ?)");
+        $dbTimestamp = date("Y-m-d H:i:s");
+        $query->bind_param("ss", $dbTimestamp, $hash);
+        if(!$query->execute())
+            die("Błąd zapisu do bazy danych");
 
 
 
