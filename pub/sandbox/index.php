@@ -40,53 +40,27 @@
         }
 
 
-
-        //wyciągnij pierwotne rozszerzenie pliku
-        //$sourceFileExtension = pathinfo($sourceFileName, PATHINFO_EXTENSION);
-        //zmień litery rozszerzenia na małe
-        //$sourceFileExtension = strtolower($sourceFileExtension);
-        /// niepotrzebne - generujemy webp
-
-
-
-        //wygeneruj hash - nową nazwę pliku
-        $newFileName = hash("sha256", $sourceFileName) . hrtime(true)
+        $newFileName = hash("sha256", $sourceFileName . hrtime(true))
                             . ".webp";
 
 
 
-        //zaczytujemy cały obraz z folderu tymczasowego do stringa
+        
         $imageString = file_get_contents($tempURL);
-
-
-
-        //generujemy obraz jako obiekt klasy GDImage
-        //@ przed nazwa funkcji powoduje zignorowanie ostrzeżeń
         $gdImage = @imagecreatefromstring($imageString);
-
-
-
-        //wygeneruj pełny docelowy URL
         $targetURL = $targetDir . $newFileName;
 
 
 
-        //zbuduj docelowy URL pliku na serwerze
-        //$targetURL = $targetDir . $sourceFileName;
-        //wycofane na rzecz hasha
 
-
-
-        //sprawdź czy plik przypadkiem już nie istnieje
+        
         if(file_exists($targetURL)) {
             die("Błąd: Podany plik już istnieje!");
         }
 
 
 
-        //przesuń plik do docelowej lokalizacji
-        //move_uploaded_file($tempURL, $targetURL);
-        //nieaktualne - generujemy webp
+        
         imagewebp($gdImage, $targetURL);
 
 
