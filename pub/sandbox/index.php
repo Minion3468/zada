@@ -63,7 +63,7 @@
         
         imagewebp($gdImage, $targetURL);
 
-        $db = new mysqli('localhost', 'root', '', 'cms');
+        $db = new mysqli('localhost', 'root', '', 'bazacms');
         $query = $db->prepare("INSERT INTO post VALUES(NULL, ?, ?)");
         $dbTimestamp = date("Y-m-d H:i:s");
         $query->bind_param("ss", $dbTimestamp, $hash);
