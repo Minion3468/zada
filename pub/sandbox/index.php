@@ -18,29 +18,29 @@
     <?php
     if(isset($_POST['submit']))
     {
-         //zdefiniuj folder do którego trafią pliki (ścieżka względem pliku index.php)
+         
         $targetDir = "img/";
 
 
         
-        //pobierz pierwotną nazwę pliku z tablicy $_FILES
+        
         $sourceFileName = $_FILES['uploadedFile']['name'];
 
 
 
-        //pobierz tymczasową ścieżkę do pliku na serwerze
+        
         $tempURL = $_FILES['uploadedFile']['tmp_name'];
 
 
 
-        //sprawdź czy mamy do czynienia z obrazem
+        
         $imgInfo = getimagesize($tempURL);
         if(!is_array($imgInfo)) {
             die("Błąd: Przekazany plik nie jest obrazem!");
         }
 
 
-        $newFileName = hash("sha256", $sourceFileName . hrtime(true));
+        $hash = hash("sha256", $sourceFileName . hrtime(true));
         $newFileName = $hash        . ".webp";
 
 
