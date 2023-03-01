@@ -20,19 +20,10 @@
     {
          
         $targetDir = "img/";
-
-
-        
         
         $sourceFileName = $_FILES['uploadedFile']['name'];
 
-
-
-        
         $tempURL = $_FILES['uploadedFile']['tmp_name'];
-
-
-
         
         $imgInfo = getimagesize($tempURL);
         if(!is_array($imgInfo)) {
@@ -42,25 +33,15 @@
 
         $hash = hash("sha256", $sourceFileName . hrtime(true));
         $newFileName = $hash        . ".webp";
-
-
-
-        
+    
         $imageString = file_get_contents($tempURL);
         $gdImage = @imagecreatefromstring($imageString);
         $targetURL = $targetDir . $newFileName;
-
-
-
-
-        
+   
         if(file_exists($targetURL)) {
             die("Błąd: Podany plik już istnieje!");
         }
-
-
-
-        
+    
         imagewebp($gdImage, $targetURL);
 
         $db = new mysqli('localhost', 'root', '', 'bazacms');
@@ -69,8 +50,6 @@
         $query->bind_param("ss", $dbTimestamp, $hash);
         if(!$query->execute())
             die("Błąd zapisu do bazy danych");
-
-
 
         echo "Plik został poprawnie wrzucony na serwer";
     }
