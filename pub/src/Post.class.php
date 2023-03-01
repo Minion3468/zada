@@ -1,5 +1,30 @@
 <?php
 class Post {
+    private int $id;
+    private string $filename;
+    private string $timestamp;
+
+    function __construct(int $i, string $f, string $t) {
+        $this->id = $i;
+        $this->filename = $f;
+        $this->timestamp = $t;
+    }
+
+    static function getLast() : Post {
+        global $db;
+        $query = $db->prepare("SELECT * FROM post ORDER BY timestamp DESC LIMIT 1");
+        $query->execute();
+        $result = $query->get_result();
+        $row = $result->fetch_assoc();
+        $p = new Post($row['id'], $row['filename'], $row['timestamp']);
+        return $p; 
+    }
+
+
+
+
+
+
     static function upload(string $tempFileName) {
         
         $uploadDir = "img/";
@@ -12,14 +37,14 @@ class Post {
         
         $hash = hash("sha256", $randomSeed);
         
-        $targetFileName = $uploadDir . $hash . ".webp";
+        $newFileName = $uploadDir . $hash . ".webp";
        
-        if(file_exists($targetFileName)) {
+        if(file_exists($newFileName)) {
             die("Błąd: Podany plik już istnieje!");
         }
         $imageString = file_get_contents($tempFileName);
         $gdImage = @imagecreatefromstring($imageString);
-        imagewebp($gdImage, $targetFileName);
+        imagewebp($gdImage, $newFileName);
 
         
         

@@ -16,3 +16,8 @@ require('./../src/Post.class.php');
 if(isset($_POST['submit'])) 
     Post::upload($_FILES['uploadedFile']['tmp_name']);
 ?>
+
+
+<?php
+var_dump(Post::getLast());
+?>
