@@ -1,5 +1,5 @@
 <?php
-$db = new mysqli("localhost", "root", "", "cms");
+$db = new mysqli("localhost", "root", "", "bazacms");
 require("Post.class.php");
 
 ?>
