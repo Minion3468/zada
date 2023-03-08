@@ -4,7 +4,7 @@ class Post {
     private string $filename;
     private string $timestamp;
 
-    function __construct(int $i, string $f, string $t) {
+    function __construct(int $i, string $f, string $t)  {
         $this->id = $i;
         $this->filename = $f;
         $this->timestamp = $t;
