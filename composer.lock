@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "817145d6eae1df6dc67bd37b6f4f4469",
+    "content-hash": "9926cf71bf0eacd1c018e6edc9046eba",
     "packages": [
         {
             "name": "steampixel/simple-php-router",

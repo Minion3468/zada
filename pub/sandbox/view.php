@@ -14,7 +14,7 @@
         }
         </style>
 <?php
-$db = new mysqli('localhost', 'root', '', 'bazacms');
+$db = new mysqli('localhost', 'root', '', 'cms');
 $q = "SELECT * FROM post ORDER BY timestamp DESC";
 $result = $db->query($q);
 while($row = $result->fetch_assoc()) {
@@ -24,4 +24,4 @@ while($row = $result->fetch_assoc()) {
 }
 ?>
 </body>
-</html> 
+</html>
