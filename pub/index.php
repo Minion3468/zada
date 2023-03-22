@@ -20,7 +20,7 @@ Route::add('/upload', function() {
 Route::add('/upload', function() {
     global $twig;
     if(isset($_POST['submit']))  {
-        Post::upload($_FILES['uploadedFile']['tmp_name']);
+        Post::upload($_FILES['uploadedFile']['tmp_name'], $_POST['userId']);
     }
     header("Location: http://localhost/zada/pub");
 }, 'post');
@@ -37,6 +37,21 @@ Route::add('/register', function(){
         User::register($_POST['email'], $_POST['password']);
         header("Location: http://localhost/zada/pub");
     }
+}, 'post');
+
+Route::add('/login', function(){
+    global $twig;
+    $twigData = array("pageTitle" => "Zaloguj użytkownika");
+    $twig->display("login.html.twig", $twigData);
+});
+
+Route::add('/login', function() {
+    global $twig;
+    if(isset($_POST['submit'])) {
+        User::login($_POST['email'], $_POST['password']);
+    }
+    header("Location: http://localhost/cms/pub");
+
 }, 'post');
 
 

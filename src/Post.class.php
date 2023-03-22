@@ -4,12 +4,19 @@ class Post {
     private string $filename;
     private string $timestamp;
     private string $nazwa;
+    private int $authorId;
+    private string $authorName;
 
-    function __construct(int $i, string $f, string $t, string $n) {
+
+
+    function __construct(int $i, string $f, string $t, string $n, int $authorId) {
         $this->id = $i;
         $this->filename = $f;
         $this->timestamp = $t;
         $this->nazwa = $n;
+        $this->authorId = $authorId;
+        global $db;
+        $this->authorName = User::getNameById($this->authorId);
     }
 
     public function getFilename() : string {
@@ -21,6 +28,9 @@ class Post {
     public function getnazwa() : string {
         return $this->nazwa;
     }
+    public function getAuthorName() : string {
+        return $this->authorName;
+    }
 
     
     static function getLast() : Post {
@@ -29,7 +39,7 @@ class Post {
         $query->execute();
         $result = $query->get_result();
         $row = $result->fetch_assoc();
-        $p = new Post($row['id'], $row['filename'], $row['timestamp'], $row['nazwa']);
+        $p = new Post($row['id'], $row['filename'], $row['timestamp'], $row['nazwa'],  $row['userId']);
         return $p; 
     }
 
@@ -43,13 +53,13 @@ class Post {
         $postsArray = array();
 
         while($row = $result->fetch_assoc()) {
-            $post = new Post($row['id'],$row['filename'],$row['timestamp'] , $row['nazwa']);
+            $post = new Post($row['id'],$row['filename'],$row['timestamp'] , $row['nazwa'], $row['userId']);
             array_push($postsArray, $post);
         }
         return $postsArray;
     }
 
-    static function upload(string $tempFileName) {
+    static function upload(string $tempFileName ,int $userId) {
         $nazwa=$_POST['nazwaMema'];
         $targetDir = "img/";
         $imgInfo = getimagesize($tempFileName);
@@ -67,9 +77,9 @@ class Post {
         imagewebp($gdImage, $newFileName);
 
         global $db;
-        $query = $db->prepare("INSERT INTO post VALUES(NULL, ?, ?,?)");
+        $query = $db->prepare("INSERT INTO post VALUES(NULL, ?, ?,?,?)");
         $dbTimestamp = date("Y-m-d H:i:s");
-        $query->bind_param("sss", $dbTimestamp, $newFileName,$nazwa);
+        $query->bind_param("sssi", $dbTimestamp, $newFileName,$nazwa,$userId);
         if(!$query->execute())
             die("Błąd zapisu do bazy danych");
 
