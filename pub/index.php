@@ -14,7 +14,14 @@ Route::add('/', function() {
 Route::add('/upload', function() {
     global $twig;
     $twigData = array("pageTitle" => "Wgraj mema");
+    if(User::isAuth())
+    {
+        $twigData['user'] = $_SESSION['user'];
     $twig->display("upload.html.twig", $twigData);
+        $twig->display("upload.html.twig", $twigData);
+    } else {
+        http_response_code(403);
+    }
 });
 
 Route::add('/upload', function() {
@@ -50,9 +57,29 @@ Route::add('/login', function() {
     if(isset($_POST['submit'])) {
         User::login($_POST['email'], $_POST['password']);
     }
-    header("Location: http://localhost/cms/pub");
+    header("Location: http://localhost/zada/pub");
 
 }, 'post');
+
+Route::add('/admin', function()  {
+    global $twig;
+
+    if(User::isAuth()) {
+        $postArray = Post::getPage(1,100);
+        $twigData = array("postArray" => $postArray);
+        $twig->display("admin.html.twig", $twigData);
+    } else {
+        http_response_code(403);
+    }
+});
+
+Route::add('/admin/remove/([0-9]*)', function($id) {
+    if(Post::remove($id)) {
+        header("Location: http://localhost/zada/pub/admin/");
+    } else {
+        die("Nie udało się usunąć podanego obrazka");
+    }
+});
 
 
 

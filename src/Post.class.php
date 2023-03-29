@@ -31,6 +31,9 @@ class Post {
     public function getAuthorName() : string {
         return $this->authorName;
     }
+    public function getId() : int {
+        return $this->id;
+    }
 
     
     static function getLast() : Post {
@@ -45,7 +48,7 @@ class Post {
 
     static function getPage(int $pageNumber = 1, int $postsPerPage = 10) : array {
         global $db;
-        $query = $db->prepare("SELECT * FROM post ORDER BY timestamp DESC LIMIT ? OFFSET ?");
+        $query = $db->prepare("SELECT * FROM post WHERE removed = 0 ORDER BY timestamp DESC LIMIT ? OFFSET ?");
         $offset = ($pageNumber-1)*$postsPerPage;
         $query->bind_param('ii', $postsPerPage, $offset);
         $query->execute();
@@ -83,6 +86,12 @@ class Post {
         if(!$query->execute())
             die("Błąd zapisu do bazy danych");
 
+    }
+    public static function remove($id) : bool {
+        global $db;
+        $query = $db->prepare("UPDATE post SET removed = 1 WHERE id = ?");
+        $query->bind_param("i", $id);
+        return $query->execute();
     }
 }
 
