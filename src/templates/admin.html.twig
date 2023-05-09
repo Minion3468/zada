@@ -1,0 +1,34 @@
+{% include 'header.html.twig' %}
+<div id="pageContainer">
+<table>
+    <tr>
+        <th>Miniatura</th>
+        <th>Tytuł</th>
+        <th>Autor</th> 
+        <th>Czas</th>
+        <th>Wyklucz</th>
+    </tr>
+    {% for post in postArray %}
+<div id="post">
+    <tr>
+        <td><img class="thumbnail" src="./../{{post.getFilename()}}" alt=""></td>
+        <td>Tytuł: {{post.getTitle()}}</td>
+        <td>Autor: {{post.getAuthorName()}}</td>
+        <td>Data dodania: {{post.getTimestamp()}}</td>  
+        <td>
+            <a href="admin/remove/{{post.getID}}">BAN</a>
+        </td>
+    </tr>
+    
+    
+    
+
+</div>
+{% endfor %}  
+
+</table>
+
+
+
+{% include 'footer.html.twig' %}    
+</div>
