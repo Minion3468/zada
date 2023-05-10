@@ -3,18 +3,18 @@ body {
     padding: 0;
 }
 div#pageContainer {
-    max-width: 960px;
+    max-width: 1200px;
     margin: 0 auto;
 }
 h1 {
     text-align: center;
 }
 div#post {
-    background-color: lightgray;
+    background-color: black;
     padding: 20px;
     margin-bottom: 20px;
 }
-div#post img {
+div#post > img {
     width: 100%;
 }
 div#loggedUser {

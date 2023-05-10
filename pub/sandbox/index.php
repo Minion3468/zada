@@ -4,80 +4,57 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title></title>
 </head>
 <body>
     <form action="" method="post" enctype="multipart/form-data">
         <label for="uploadedFileInput">
             Wybierz plik do wgrania na serwer:
+
         </label><br>
         <input type="file" name="uploadedFile" id="uploadedFileInput" required><br>
-        <input type="submit" value="Wyślij plik" name="submit"><br>  
+        <input type="submit" value="Wyślij plik" name="submit"><br>
     </form>
 
-    <?php
-   $db = new mysqli("localhost","root","","cms");
-    //sprawdź czy został wysłany formularz
-    if(isset($_POST['submit'])) 
-    {
-        //zdefiniuj folder do którego trafią pliki (ścieżka względem pliku index.php)
-        $targetDir = "img/";
+    <?php 
+        if(isset($_POST['submit'])) {
+            //echo "<pre>";
+            //var_dump($_FILES);
+            $db = new mysqli('localhost', 'root', '', 'cms_ss');
+            if($db->connect_error) {
+                die("Connection failed");
+            }
+            $targetDir = "img/";
+            $sourceFileName = $_FILES['uploadedFile']['name'];
 
-        //pobierz pierwotną nazwę pliku z tablicy $_FILES
-        $sourceFileName = $_FILES['uploadedFile']['name'];
+           
+            $tempURL = $_FILES['uploadedFile']['tmp_name'];
+            $imgInfo = getimagesize($tempURL);
+            if(!is_array($imgInfo)) {
+                die("BŁĄD: Podany plik nie jest obrazem!");
+            }
 
-        //pobierz tymczasową ścieżkę do pliku na serwerze
-        $tempURL = $_FILES['uploadedFile']['tmp_name'];
+            $newFileName =   hash("sha256", $sourceFileName) . hrtime(true). ".webp";
 
-        //sprawdź czy mamy do czynienia z obrazem
-        $imgInfo = getimagesize($tempURL);
-        if(!is_array($imgInfo)) {
-            die("BŁĄD: Przekazany plik nie jest obrazem!");
+            $imageString = file_get_contents($tempURL);
+            $gdImage = @imagecreatefromstring($imageString);
+
+
+            $targetURL = $targetDir . $newFileName;
+
+
+
+            if(file_exists($targetURL)) {
+                die("BŁĄD: Podany plik już istnieje");
+            }
+            $date = date("Y-m-d H:i:s");
+            $q = "INSERT INTO post (timestamp, filename) VALUES ( '$date' , '$newFileName');";
+            $db->query($q);
+            //move_uploaded_file($tempURL, $targetURL);
+            imagewebp($gdImage, $targetURL);
+            $db->close();
+
         }
-
-        //wyciągnij pierwotne rozszerzenie pliku
-        //$sourceFileExtension = pathinfo($sourceFileName, PATHINFO_EXTENSION);
-        //zmień litery rozszerzenia na małe
-        //$sourceFileExtension = strtolower($sourceFileExtension);
-        /// niepotrzebne - generujemy webp
-
-        //wygeneruj hash - nową nazwę pliku
-        $hash = hash("sha256", $sourceFileName . hrtime(true));
-        $newFileName = $hash . ".webp";
-
-        //zaczytujemy cały obraz z folderu tymczasowego do stringa
-        $imageString = file_get_contents($tempURL);
-
-        //generujemy obraz jako obiekt klasy GDImage
-        //@ przed nazwa funkcji powoduje zignorowanie ostrzeżeń
-        $gdImage = @imagecreatefromstring($imageString);
-
-        //wygeneruj pełny docelowy URL
-        $targetURL = $targetDir . $newFileName;
-
-        //zbuduj docelowy URL pliku na serwerze
-        //$targetURL = $targetDir . $sourceFileName;
-        //wycofane na rzecz hasha
-
-        //sprawdź czy plik przypadkiem już nie istnieje
-        if(file_exists($targetURL)) {
-            die("BŁĄD: Podany plik już istnieje!");
-        }
-
-        //przesuń plik do docelowej lokalizacji
-        //move_uploaded_file($tempURL, $targetURL);
-        //nieaktualne - generujemy webp
-        imagewebp($gdImage, $targetURL);
-
-
-        echo "Plik został poprawnie wgrany na serwer";
-        $dateTime = date("Y-m-d H:i:s" );
-        $sql = "INSERT INTO post (timestamp, filename) VALUE ('$dateTime', '$hash')";
-        echo "Plik został pomyślnie wgrany na serwer";
-        $db->query($sql);
-        $db->close();
-    }
-
     ?>
 </body>
 </html>

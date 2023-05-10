@@ -1,21 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-<?php
-$db = new mysqli('localhost', 'root', '', 'cms');
-$q = "SELECT * FROM post ORDER BY timestamp DESC";
+<?php 
+$db = new mysqli('localhost', 'root', '', 'cms_ss');
+$id=1;
+$q = ("SELECT filename FROM `post` WHERE 1 ORDER BY ID DESC;");
+$targetDir = "pub/sandbox/img/";
+
 $result = $db->query($q);
-while($row = $result->fetch_assoc()){
-    $hash = $row['FileName'];
-    $url = "img/" . $hash . ".webp";
-    echo "<img src=\"$url\">";
+$resultSet = array();
+while($cRecord = $result->fetch_assoc()) {
+    $resultSet[] = $cRecord;
 }
+
+$arrayId = 0;
+$ilosc = count($resultSet);
+while ($ilosc > $arrayId) {
+$filename = $resultSet[$arrayId]["filename"];
+echo("<img src=\"img\\$filename\" alt=\"\"> <br>"); 
+$arrayId = $arrayId + 1;  
+}
+
+
+
 ?>
-</body>
-</html>

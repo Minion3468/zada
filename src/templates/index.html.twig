@@ -1,19 +1,77 @@
 {% include 'header.html.twig' %}
 <div id="pageContainer">
-    <h1>{{pageTitle}}</h1>
-    {% if user is defined %}
-    <div id="loggedUser">Zalogowany użytkownik: {{ user.getName() }} </div>
-    {% endif %}
 
-    {% for post in postArray %}
-    <div id="post">
-        <img src="{{ post.getFilename() }}">
-        <h6>Data dodania: {{ post.getTimestamp() }} </h6>
-        <h6>Autor: {{post.getAuthorName() }}</h6>
-        <h6>Data dodania: {{ post.getnazwa() }} </h6>
-    </div>
-    {% endfor %}
-</div>
+	<div style="background-color: white; border:3px black solid;">
+		<a href="login" style="background-color:black; color:white;">Loguj</a>
+		<a href="register" style="background-color:black; color:white;">Rejestracja</a>
+		<a href="admin" style="background-color:black; color:white;">Admin Panel</a>
+		<a href="upload" style="background-color:black; color:white;">Dodaj Mema</a>
+	</div>
+	<style>
+		a {
+			display: inline-block;
+			padding: 10px;
+			border-radius: 5px;
+			margin-left: 15%;
+            text-decoration: none;
+		}
+	</style>
+
+	<h1>{{pageTitle}}</h1>
+	{% if  user is defined %}
+		<div id="loggedUser" style="color:white">
+			Zalogowany użytkownik:
+			{{ user.getName }}
+		</div>
+
+		{% endif%}
+		{% for post in postArray %}
+			<div id="post" style="background-color: black; color:white; font-weight: bolder;">
+				<h6>Tytuł:
+					{{post.getTitle()}}</h6>
+				<h6>Autor:
+					{{post.getAuthorName()}}</h6>
+				<img src="{{post.getFilename()}}">
+				<h6>Data dodania:
+					{{post.getTimestamp()}}</h6>
+				<h6>Ilość polubień:
+					{{post.getLikeCount()}}</h6>
+				<form action="" method="POST" enctype="multipart/form-data">
+					<input type="hidden" name="postID" value="{{ post.getID }}">
+					<input type="hidden" name="userID" value="{{ user.getID }}">
+					<button type="submit" name="like" id="like">+</button>
+				</form>
+				<form action="" method="POST" enctype="multipart/form-data">
+					<input type="hidden" name="postID" value="{{ post.getID }}">
+					<input type="hidden" name="userID" value="{{ user.getID }}">
+					<button type="submit" name="dislike" id="dislike">-</button>
+				</form>
+				<style>
+					button {
+						display: inline-block;
+						width: 150px;
+						font-size: 20px;
+						padding: 10px;
+						border: 1px solid black;
+						background-color: white;
+						color: black;
+					}
+
+					button#like:hover  {
+						background-color: green;
+						color: white;
+					}
+
+                    button#dislike:hover  {
+						background-color: red;
+						color: white;
+					}
+				</style>
 
 
-{% include 'footer.html.twig' %}
+			</div>
+		{% endfor %}
+
+
+		{% include 'footer.html.twig' %}
+	</div>
